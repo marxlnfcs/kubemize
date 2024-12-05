@@ -1,0 +1,639 @@
+{
+  "type": "object",
+  "properties": {
+    "extends": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "patterns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "patterns"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "hooks": {
+      "type": "object",
+      "properties": {
+        "pre_all": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "post_all": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "pre_apply": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "post_apply": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "pre_template": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "post_template": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "pre_standalone": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "post_standalone": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "pre_plan": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "post_plan": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "pre_destroy": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "post_destroy": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "namespace": {
+      "type": "string"
+    },
+    "helm": {
+      "type": "object",
+      "properties": {
+        "arguments": {
+          "type": "object",
+          "properties": {
+            "global": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": true
+            },
+            "apply": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": true
+            },
+            "destroy": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": true
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "repositories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              },
+              "passCredentials": {
+                "type": "boolean"
+              },
+              "certFile": {
+                "type": "string"
+              },
+              "keyFile": {
+                "type": "string"
+              },
+              "keyRing": {
+                "type": "string"
+              },
+              "verify": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "url"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "releases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "chart": {
+                "type": "string"
+              },
+              "arguments": {
+                "type": "object",
+                "properties": {
+                  "global": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": true
+                  },
+                  "apply": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": true
+                  },
+                  "destroy": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              },
+              "version": {
+                "type": "string"
+              },
+              "namespace": {
+                "type": "string"
+              },
+              "values": {},
+              "set": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": true
+              },
+              "repository": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              },
+              "passCredentials": {
+                "type": "boolean"
+              },
+              "caFile": {
+                "type": "string"
+              },
+              "certFile": {
+                "type": "string"
+              },
+              "keyFile": {
+                "type": "string"
+              },
+              "keyRing": {
+                "type": "string"
+              },
+              "verify": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "chart"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "kubectl": {
+      "type": "object",
+      "properties": {
+        "order": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "arguments": {
+          "type": "object",
+          "properties": {
+            "global": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": true
+            },
+            "apply": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": true
+            },
+            "destroy": {
+              "type": "object",
+              "properties": {},
+              "required": [],
+              "additionalProperties": true
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "manifests": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "patterns"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "generators": {
+          "type": "object",
+          "properties": {
+            "configMaps": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "namespace": {
+                    "type": "string"
+                  },
+                  "annotations": {
+                    "type": "object"
+                  },
+                  "labels": {
+                    "type": "object"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "secrets": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "namespace": {
+                    "type": "string"
+                  },
+                  "annotations": {
+                    "type": "object"
+                  },
+                  "labels": {
+                    "type": "object"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": true
+                  },
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "locals": {
+      "type": "object"
+    },
+    "variables": {
+      "type": "object"
+    }
+  },
+  "required": [],
+  "additionalProperties": false,
+  "$id": null,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
