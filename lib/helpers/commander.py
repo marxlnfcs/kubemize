@@ -6,7 +6,8 @@ from lib.project import Project
 class Commander(argparse.ArgumentParser):
     def __init__(self, version: str = None, **kwargs):
         super().__init__(**kwargs)
-        self.add_argument('--version', action='version', version=f"%(prog)s {version}")
+        if version is not None:
+            self.add_argument('--version', action='version', version=f"{version}")
 
     def get_subparser(self):
         if not hasattr(self, "__sub_parser__"):
