@@ -1,7 +1,9 @@
 import typing
 
-from jinja2 import Template as JinjaTemplate, Undefined, StrictUndefined, UndefinedError
+from jinja2 import Template as JinjaTemplate, Undefined, StrictUndefined, UndefinedError, TemplateSyntaxError
 from jinja2.utils import missing, object_type_repr
+
+from jinja2_ansible_filters import AnsibleCoreFiltersExtension
 
 from lib.helpers.filesystem import file_exists
 from lib.helpers.object import object_format_each_primitive
@@ -34,6 +36,11 @@ class ExtendedUndefined(StrictUndefined):
     def _get_vars_info(self) -> dict:
         return globals()['TemplateVarsInfo'] if "TemplateVarsInfo" in globals() else {}
 
+class TemplateSyntaxException(Exception):
+    def __init__(self, message: str, file: str = None):
+        self.message = " ".join([message, f"in '{file}'"]) if file and file not in message else message
+        super().__init__(self.message)
+
 class TemplateUndefinedException(Exception):
     def __init__(self, message: str, file: str = None):
         self.message = " ".join([message, f"in '{file}'"]) if file and file not in message else message
@@ -60,7 +67,13 @@ def _create_vars_info(obj: any, info: dict = None, parent: str = None) -> dict:
 class Template:
     @staticmethod
     def _get_template(content: str, undefined: typing.Type[Undefined] = ExtendedUndefined) -> JinjaTemplate:
-        return JinjaTemplate(source=content, undefined=undefined)
+        return JinjaTemplate(
+            source=content,
+            undefined=undefined,
+            extensions=[
+                AnsibleCoreFiltersExtension,
+            ]
+        )
 
     @staticmethod
     def render(content: str, data: dict = None) -> str:
@@ -71,6 +84,8 @@ class Template:
             globals()['TemplateVarsInfo'] = _create_vars_info(data)
             # render template
             return Template._get_template(content).render(data)
+        except TemplateSyntaxError as ex:
+            raise TemplateSyntaxException(message=ex.message)
         except UndefinedError as ex:
             raise TemplateUndefinedException(message=ex.message)
 
@@ -92,6 +107,8 @@ class Template:
                 with open(file, "r") as f:
                     return Template.render(f.read(), data)
             return None
+        except TemplateSyntaxException as ex:
+            raise TemplateSyntaxException(message=ex.message, file=file)
         except TemplateUndefinedException as ex:
             raise TemplateUndefinedException(message=ex.message, file=file)
 

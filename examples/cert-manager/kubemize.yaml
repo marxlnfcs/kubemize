@@ -1,0 +1,7 @@
+extends:
+  - "charts/cert-manager"
+  - "vars/**/**.{yml,yaml}"
+
+kubectl:
+  manifests:
+    - "manifests/**/*.{yml,yaml,yml.j2,yaml.j2}"

@@ -1,0 +1,13 @@
+variables:
+  certManager:
+    installCRDs: false
+    enableMonitoring: true
+    image:
+      repository: "quay.io/jetstack/cert-manager-controller"
+      tag: "v1.16.2"
+      pullPolicy: "IfNotPresent"
+    serviceAccount:
+      name: "cert-manager"
+      annotations: {}
+      labels: {}
+      automountServiceAccountToken: true

@@ -232,7 +232,7 @@ class ProjectConfigParserUtils:
                             continue
                         break
                     if not config_file:
-                        Logger.warn(f"File '{join_path(config_file, self.get_base_config_names()[0])}' does not exist or is no file.")
+                        Logger.warn(f"File '{join_path(config_path["path"], self.get_base_config_names()[0])}' does not exist or is no file.")
                         continue
                 # load config
                 config_base = self.load_and_validate_from_yaml(filename=config_file, cwd=cwd, partial=True)
