@@ -3,8 +3,6 @@ import os
 from lib.helpers.commander import Commander, CommanderCommandForProject
 from lib.helpers.filesystem import join_path, resolve_path
 from lib.helpers.logging import Logger
-from lib.helpers.object import reverse_array
-from lib.helpers.script_builder import ScriptBuilder
 from lib.helpers.yamls import YAML
 from lib.plan.plan import ProjectPlan
 from lib.project import Project
@@ -14,7 +12,7 @@ class CommandStandalone(CommanderCommandForProject):
     def __init__(self):
         super().__init__(
             name="standalone",
-            description="Builds the project and stores all rendered files in the directory defined with argument '--output' to allow deployment without the kubemize cli."
+            description="Builds the project and stores all rendered files in the directory defined with argument '--output' to allow deployment without the cli."
         )
 
     def commands(self, commander: Commander):
@@ -50,8 +48,8 @@ class CommandStandalone(CommanderCommandForProject):
         Logger.info("Creating {0} chart values...".format(len(charts)))
         self._write_resources(output_dir, charts)
         # writing scripts
-        Logger.info("Creating scripts...")
-        self._create_scripts(project, output_dir, manifests, charts)
+        Logger.info("Creating kustomization.yaml...")
+        self._create_kustomization(output_dir, manifests, charts)
         # run hooks
         self._run_hooks(project, "post")
 
@@ -80,6 +78,11 @@ class CommandStandalone(CommanderCommandForProject):
         for state in plan.get_expected_charts():
             # get chart and it's identifier
             chart = state.get_chart()
+            # skip if chart is oci, because OCI repositories are not supported by kustomize
+            # @see https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/helmcharts/#long-term-support
+            if chart.is_oci():
+                Logger.warn(f"Skipping chart '{0}', because OCI repositories are not supported by kustomization. See: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/helmcharts/#long-term-support".format(chart.get_name()))
+                continue
             # create chart in dict if not exist
             charts.append({
                 "path": "charts/values_{0}_{1}.yaml".format(chart.get_namespace(), chart.get_name()),
@@ -95,98 +98,32 @@ class CommandStandalone(CommanderCommandForProject):
             YAML.to_file(resource_path, resource["content"])
             Logger.success("Created file '{0}'...".format(resource_path))
 
-
-    def _create_scripts(self, project: Project, output_dir: str, manifests: list, charts: list):
-        self._create_scripts_apply(project, output_dir, manifests, charts)
-        self._create_script_destroy(project, output_dir, manifests, charts)
-
-    def _create_scripts_apply(self, project: Project, output_dir: str, manifests: list, charts: list):
-        # create script builders
-        builders = [
-            ScriptBuilder(platform="windows"),
-            ScriptBuilder(platform="linux"),
-        ]
-        # create commands for every builder
-        for builder in builders:
-            # create manifest commands
-            builder.add_comment([
-                "=====================================================",
-                "===================== Manifests =====================",
-                "=====================================================",
-            ])
-            builder.newline()
-            for manifest in manifests:
-                comment = ("Performing create or update of manifest '{0}' of kind '{1}' in namespace '{2}'." if manifest["item"].get_namespace() else "Performing create or update of manifest '{0}' of kind '{1}'.").format(manifest["item"].get_name(), manifest["item"].get_kind(), manifest["item"].get_namespace())
-                builder.add(
-                    comment=comment,
-                    prints="{0}..".format(comment),
-                    content=project.get_kubectl().create_apply_command(manifest["item"], manifest["path"]).to_string(),
-                )
-                builder.newline()
-            # new lines
-            builder.newline(2)
-            # create chart commands
-            builder.add_comment([
-                "=====================================================",
-                "======================= Charts ======================",
-                "=====================================================",
-            ])
-            builder.newline()
-            for chart in charts:
-                comment = "Performing install/upgrade of chart '{0}' in namespace '{1}'.".format(chart["item"].get_name(), chart["item"].get_namespace())
-                builder.add(
-                    comment=comment,
-                    prints="{0}..".format(comment),
-                    content=project.get_helm().create_apply_command(chart["item"], chart["path"]).to_string(),
-                )
-                builder.newline()
-            # log done message
-            builder.add_print("Applied!")
-            # save script
-            Logger.success("Created script '{0}'.".format(builder.save("apply", cwd=output_dir)))
-
-
-    def _create_script_destroy(self, project: Project, output_dir: str, manifests: list, charts: list):
-        # create script builders
-        builders = [
-            ScriptBuilder(platform="windows"),
-            ScriptBuilder(platform="linux"),
-        ]
-        # create commands for every builder
-        for builder in builders:
-            # create chart commands
-            builder.add_comment([
-                "=====================================================",
-                "======================= Charts ======================",
-                "=====================================================",
-            ])
-            builder.newline()
-            for chart in reverse_array(list(charts)):
-                comment = "Performing uninstall of chart '{0}' in namespace '{1}'.".format(chart["item"].get_name(), chart["item"].get_namespace())
-                builder.add(
-                    comment=comment,
-                    prints="{0}..".format(comment),
-                    content=project.get_helm().create_uninstall_command(chart["item"]).to_string(),
-                )
-                builder.newline()
-            # new lines
-            builder.newline(2)
-            # create manifest commands
-            builder.add_comment([
-                "=====================================================",
-                "===================== Manifests =====================",
-                "=====================================================",
-            ])
-            builder.newline()
-            for manifest in reverse_array(list(manifests)):
-                comment = ("Performing delete of manifest '{0}' of kind '{1}' in namespace '{2}'." if manifest["item"].get_namespace() else "Performing delete of manifest '{0}' of kind '{1}'.").format(manifest["item"].get_name(), manifest["item"].get_kind(), manifest["item"].get_namespace())
-                builder.add(
-                    comment=comment,
-                    prints="{0}..".format(comment),
-                    content=project.get_kubectl().create_delete_command(manifest["item"], manifest["path"]).to_string(),
-                )
-                builder.newline()
-            # log done message
-            builder.add_print("Destroyed!")
-            # save script
-            Logger.success("Created script '{0}'.".format(builder.save("destroy", cwd=output_dir)))
+    def _create_kustomization(self, output_dir: str, manifests: list, charts: list):
+        # create empty kustomization object
+        kustomization = {
+            "apiVersion": "kustomize.config.k8s.io/v1beta1",
+            "kind": "Kustomization",
+            "resources": [],
+            "helmCharts": [],
+        }
+        # add manifests
+        for manifest in manifests:
+            kustomization["resources"].append(manifest["path"])
+        # add charts
+        for chart in charts:
+            helmChart = {
+                "name": chart["item"].get_name(),
+                "releaseName": chart["item"].get_name(),
+                "version": chart["item"].get_version(),
+                "repo": chart["item"].get_repository_url(),
+                "namespace": chart["item"].get_namespace(),
+                "valuesFile": chart["path"],
+            }
+            if chart["item"].get_version():
+                helmChart["version"] = chart["item"].get_version()
+            kustomization["helmCharts"].append(helmChart)
+        # save kustomization.yaml to filesystem
+        self._write_resources(output_dir, [{
+            "path": "kustomization.yaml",
+            "content": kustomization,
+        }])

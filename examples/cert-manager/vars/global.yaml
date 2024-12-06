@@ -1,2 +1,2 @@
 variables:
-  namespace: "cert-manager-deployment"
+  namespace: "cert-manager"
